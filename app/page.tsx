@@ -141,6 +141,5 @@ export default function Home() {
             </div>
             <MapboxMap ref={mapRef}/>
         </>
-
     );
 }
