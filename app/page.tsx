@@ -26,16 +26,17 @@ export default function Home() {
     const newCat = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        let name: HTMLElement | null = document.getElementById("form-name") as HTMLInputElement;
-        let post: HTMLElement | null = document.getElementById("form-post") as HTMLInputElement;
+        let name = (document.getElementById("form-name") as HTMLInputElement | null)?.value || "";
+        let post = (document.getElementById("form-post") as HTMLInputElement | null)?.value || "";
         let image = (document.getElementById("cat-uploads") as HTMLInputElement).files?.[0];
-        let coordinates = await getLocation();
+        let coordinates: [number, number] = await getLocation();
 
 
         const formData = new FormData();
+        // @ts-ignore
         formData.append("file", image);
-        formData.append("name", name.value);
-        formData.append("post", post.value);
+        formData.append("name", name);
+        formData.append("post", post);
         formData.append("coordinates", JSON.stringify(coordinates));
 
         try {
@@ -44,39 +45,47 @@ export default function Home() {
                     'Content-Type': 'multipart/form-data',
                 },
             });
-            console.log("File uploaded successfully:", response.data);
-            addCat(name.value, post.value, response.data.filePath, coordinates);
+            console.log("File uploaded successfully:", response.data.filePath);
+            addCat(name, post, response.data.filePath, coordinates);
         } catch (error) {
             console.error('Error uploading file:', error);
         }
     }
 
 
-    const addCat = (name: string, image: string, coordinates: [number, number]) => {
-        geojson.features.push({
-            'type': 'Feature', 'properties': {
-                'message': name, 'imageId': image, 'iconSize': [60, 60]
-            }, 'geometry': {
-                'type': 'Point', 'coordinates': [coordinates]
-            }
-        })
+    // @ts-ignore
+    const addCat = (name: string, post: string, image: number, coordinates) => {
+        // geojson.features.push({
+        //     'type': 'Feature', 'properties': {
+        //         'message': name, 'imageId': image, 'iconSize': [60, 60]
+        //     }, 'geometry': {
+        //         'type': 'Point', 'coordinates': coordinates
+        //     }
+        // })
+
+        if (mapRef.current) {
+            const marker = new mapboxgl.Marker()
+                .setLngLat(coordinates)
+                .setPopup(new mapboxgl.Popup({ offset: 25 }).setText(`${name}: ${post}`))
+                .addTo(mapRef.current);
+        }
     }
 
-    let geojson = {
-        'type': 'FeatureCollection', 'features': [{
-            'type': 'Feature', 'properties': {
-                'message': 'TEST', 'imageId': 1011, 'iconSize': [60, 60]
-            }, 'geometry': {
-                'type': 'Point', 'coordinates': [-122.32980, 47.62038] as [number, number]
-            }
-        }, {
-            'type': 'Feature', 'properties': {
-                'message': 'TEST2', 'imageId': 2, 'iconSize': [60, 60]
-            }, 'geometry': {
-                'type': 'Point', 'coordinates': [-61.21582, -15.971891] as [number, number]
-            }
-        }]
-    };
+    // let geojson = {
+    //     'type': 'FeatureCollection', 'features': [{
+    //         'type': 'Feature', 'properties': {
+    //             'message': 'TEST', 'imageId': 1011, 'iconSize': [60, 60]
+    //         }, 'geometry': {
+    //             'type': 'Point', 'coordinates': [-122.32980, 47.62038] as [number, number]
+    //         }
+    //     }, {
+    //         'type': 'Feature', 'properties': {
+    //             'message': 'TEST2', 'imageId': 2, 'iconSize': [60, 60]
+    //         }, 'geometry': {
+    //             'type': 'Point', 'coordinates': [-61.21582, -15.971891] as [number, number]
+    //         }
+    //     }]
+    // };
 
     const openForm = () => {
         // @ts-ignore
@@ -88,31 +97,31 @@ export default function Home() {
         document.getElementById("newcat-popup").style.display = "none";
     }
 
-    React.useEffect(() => {
-        if (mapRef.current) {
-            console.log("Map is initialized", mapRef.current)
-            for (const marker of geojson.features) {
-                const el = document.createElement('div');
-                const width = marker.properties.iconSize[0];
-                const height = marker.properties.iconSize[1];
-                el.className = 'marker';
-                el.style.backgroundImage = `url(https://picsum.photos/id/${marker.properties.imageId}/${width}/${height})`;
-                el.style.width = `${width}px`;
-                el.style.height = `${height}px`;
-                el.style.backgroundSize = '100%';
-
-                el.addEventListener('click', () => {
-                    window.alert(marker.properties.message);
-                });
-
-                console.log("Adding marker at coordinates ", marker.geometry.coordinates)
-                // Add markers to the map.
-                new mapboxgl.Marker(el)
-                    .setLngLat(marker.geometry.coordinates)
-                    .addTo(mapRef.current);
-            }
-        }
-    }, [mapRef.current]);
+    // React.useEffect(() => {
+    //     if (mapRef.current) {
+    //         console.log("Map is initialized", mapRef.current)
+    //         for (const marker of geojson.features) {
+    //             const el = document.createElement('div');
+    //             const width = marker.properties.iconSize[0];
+    //             const height = marker.properties.iconSize[1];
+    //             el.className = 'marker';
+    //             el.style.backgroundImage = `url(https://picsum.photos/id/${marker.properties.imageId}/${width}/${height})`;
+    //             el.style.width = `${width}px`;
+    //             el.style.height = `${height}px`;
+    //             el.style.backgroundSize = '100%';
+    //
+    //             el.addEventListener('click', () => {
+    //                 window.alert(marker.properties.message);
+    //             });
+    //
+    //             console.log("Adding marker at coordinates ", marker.geometry.coordinates)
+    //             // Add markers to the map.
+    //             new mapboxgl.Marker(el)
+    //                 .setLngLat(marker.geometry.coordinates)
+    //                 .addTo(mapRef.current);
+    //         }
+    //     }
+    // }, [mapRef.current]);
 
     return (<>
             <button id={"new-cat"} onClick={openForm}>+</button>

@@ -176,10 +176,10 @@ body,
   height: fit-content;
   width: fit-content;
   position: fixed;
-  bottom: 200px;
-  top: 200px;
-  right: 250px;
-  left: 250px;
+  bottom: 80vh;
+  top: 20vh;
+  right: 30vw;
+  left: 30vw;
   border: 2px solid #ffffff;
   border-radius: 5%;
   z-index: 9;
@@ -222,8 +222,8 @@ body,
   padding: 5px;
   position: fixed;
   border-radius: 5px;
-  top: 220px;
-  left: 270px;
+  top: 25vh;
+  left: 32vw;
 }
 
 
