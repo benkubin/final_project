@@ -7,6 +7,7 @@ import mapboxgl from "mapbox-gl";
 import axios from "axios";
 
 
+
 // SOURCE: https://www.freecodecamp.org/news/simplify-your-file-upload-process-in-express-js/
 
 
@@ -97,6 +98,22 @@ export default function Home() {
         document.getElementById("newcat-popup").style.display = "none";
     }
 
+    const addMarker = () => {
+
+        navigator.geolocation.getCurrentPosition((position) => {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+
+
+
+        if (mapRef.current) {
+            const marker = new mapboxgl.Marker()
+                .setLngLat([lng, lat])
+                .addTo(mapRef.current);
+        }
+        })
+    };
+
     // React.useEffect(() => {
     //     if (mapRef.current) {
     //         console.log("Map is initialized", mapRef.current)
@@ -124,7 +141,7 @@ export default function Home() {
     // }, [mapRef.current]);
 
     return (<>
-            <button id={"new-cat"} onClick={openForm}>+</button>
+            <button id={"new-cat"} onClick={addMarker}>+</button>
             <div id={"newcat-popup"}>
                 <form id={"newcat-form"} encType={"multipart/form-data"} onSubmit={newCat}>
                     <button type={"button"} className={"exit-newcat-button"} onClick={closeForm}>X</button>
