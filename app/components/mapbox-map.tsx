@@ -61,9 +61,11 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
     }, []);
 
     const form = typeof document !== 'undefined' ? document.getElementById('newcat-form') : null;
+
     if (form) {
         form.addEventListener('submit', (event) => {
             event.preventDefault();
+
 
             const addMarker = () => {
                 // Check if map is available before adding marker
@@ -71,9 +73,41 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
                     navigator.geolocation.getCurrentPosition((position) => {
                         const lat = position.coords.latitude;
                         const lng = position.coords.longitude;
+                        const el = document.createElement('div');
+                        el.className = 'marker';
+
+
+                        const getFormName = () => {
+                            const element = document.getElementById('newcat-form');
+                            if (element) {
+                                // @ts-ignore
+                                return element.elements['form-name'].value;
+                            }
+                            return "";
+                        }
+
+                        const getFormPost = () => {
+                            const element = document.getElementById('newcat-form');
+                            if (element) {
+                                // @ts-ignore
+                                return element.elements['form-post'].value;
+                            }
+                            return "";
+                        }
+
+                        const nameValue = getFormName();
+                        const postValue = getFormPost();
+
                         const marker = new mapboxgl.Marker()
                             .setLngLat([lng, lat])
-                            .addTo(map as mapboxgl.Map); // Use map from useState
+                            .setPopup(
+                                new mapboxgl.Popup({ offset: 25 }) // add popups
+                                    .setHTML(
+                                        `<h3>${nameValue}</h3>
+                                        <p>${postValue}</p>`
+                                    )
+                            )
+                                    .addTo(map as mapboxgl.Map); // Use map from useState
                     }, (error) => {
                         console.error("Geolocation error:", error);
                     });

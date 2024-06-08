@@ -173,6 +173,15 @@ body,
   padding: 0;
 }
 
+.mapboxgl-popup {
+  max-width: 200px;
+}
+
+.mapboxgl-popup-content {
+  text-align: left;
+  color: #d70f9d;
+}
+
 #newcat-popup {
   display: none;
   height: fit-content;
