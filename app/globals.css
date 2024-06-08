@@ -150,11 +150,12 @@ body,
 #new-cat {
   background-color: #d70f9d;
   color: #ffffff;
+  border: none;
   border-radius: 50%;
   z-index: +1;
-  position: fixed;
-  bottom: 60px;
-  right: 60px;
+  position: absolute;
+  bottom: 5vw;
+  right: 5vh;
   height: 4rem;
   width: 4rem;
   padding: 10px;
@@ -184,21 +185,23 @@ body,
 
 #newcat-popup {
   display: none;
-  height: fit-content;
-  width: fit-content;
-  position: fixed;
+  align-items: center;
+  height: auto;
+  width: 80vw;
+  max-width: 500px;
+  position: absolute;
   bottom: 80vh;
   top: 20vh;
   right: 30vw;
   left: 30vw;
-  border: 2px solid #ffffff;
+  border: none;
   border-radius: 5%;
   z-index: 9;
   align-content: center;
 }
 
 #newcat-form {
-  width: inherit;
+  width: 100%;
   padding: 60px;
   border-radius: 5%;
   background-color: #5f0745;
@@ -225,7 +228,7 @@ body,
   cursor: pointer;
   width: 100%;
   margin-bottom:10px;
-  opacity: 0.8;
+  opacity: 70%;
 }
 
 #newcat-form .exit-newcat-button {
