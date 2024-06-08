@@ -16,6 +16,10 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
     // will contain `null` by default
     const mapRef = React.useRef(null);
 
+    const clearForm = () => {
+        const allInputs = document.querySelectorAll('input');
+        allInputs.forEach(singleInput => singleInput.value = '');
+    }
 
     const openForm = () => {
         // @ts-ignore
@@ -25,8 +29,8 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
     const closeForm = () => {
         // @ts-ignore
         document.getElementById("newcat-popup").style.display = "none";
+        clearForm();
     }
-
 
     React.useEffect(() => {
         const node = mapRef.current;
@@ -100,14 +104,10 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
 
                         const marker = new mapboxgl.Marker()
                             .setLngLat([lng, lat])
-                            .setPopup(
-                                new mapboxgl.Popup({ offset: 25 }) // add popups
-                                    .setHTML(
-                                        `<h3>${nameValue}</h3>
-                                        <p>${postValue}</p>`
-                                    )
-                            )
-                                    .addTo(map as mapboxgl.Map); // Use map from useState
+                            .setPopup(new mapboxgl.Popup({offset: 25}) // add popups
+                                .setHTML(`<h3>${nameValue}</h3>
+                                        <p>${postValue}</p>`))
+                            .addTo(map as mapboxgl.Map); // Use map from useState
                     }, (error) => {
                         console.error("Geolocation error:", error);
                     });
@@ -126,7 +126,7 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
     return (<div>
         <button id={"new-cat"} onClick={openForm}>+</button>
         <div id={"newcat-popup"}>
-            <form id={"newcat-form"} encType={"multipart/form-data"}>
+            <form id={"newcat-form"} encType={"multipart/form-data"} onSubmit={closeForm}>
                 <button type={"button"} className={"exit-newcat-button"} onClick={closeForm}>X</button>
                 <h2>Add a cat!</h2>
                 <label htmlFor={"photo-uploads"}>Upload Photo</label>

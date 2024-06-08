@@ -230,9 +230,14 @@ body,
 
 #newcat-form .exit-newcat-button {
   background-color: #d70f9d;
-  padding: 5px;
+  opacity: 50%;
+  border: none;
+  padding: 10px;
   position: fixed;
-  border-radius: 5px;
-  top: 25vh;
+  border-radius: 50%;
+  height: 2.5rem;
+  width: 2.5rem;
+  font-size: 1rem;
+  top: 23vh;
   left: 32vw;
 }
