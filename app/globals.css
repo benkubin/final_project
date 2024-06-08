@@ -190,17 +190,17 @@ body,
 
 #newcat-popup {
   display: none;
-  align-items: center;
   height: auto;
   width: 80vw;
-  max-width: 500px;
+  max-width: 300px;
   position: absolute;
-  top: 20vh;
-  left: 30vw;
+  top: 16vh;
+  left: 20vw;
   border: none;
   border-radius: 5%;
   z-index: 9;
-  align-content: center;
+  align-items: center;
+  justify-items: center;
 }
 
 #newcat-form {
@@ -239,13 +239,13 @@ body,
   opacity: 50%;
   border: none;
   padding: 10px;
-  position: fixed;
+  position: absolute;
   border-radius: 50%;
   height: 2.5rem;
   width: 2.5rem;
   font-size: 1rem;
-  top: 23vh;
-  left: 32vw;
+  top: 3vh;
+  left: 4vw;
 }
 
 

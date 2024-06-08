@@ -23,7 +23,7 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
 
     const openForm = () => {
         // @ts-ignore
-        document.getElementById("newcat-popup").style.display = "block";
+        document.getElementById("newcat-popup").style.display = "flex";
     }
 
     const closeForm = () => {
@@ -129,12 +129,12 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
             <form id={"newcat-form"} encType={"multipart/form-data"} onSubmit={closeForm}>
                 <button type={"button"} className={"exit-newcat-button"} onClick={closeForm}>X</button>
                 <h2>Add a cat!</h2>
-                <label htmlFor={"photo-uploads"}>Upload Photo</label>
+                <label htmlFor={"photo-uploads"}>Upload Photo:</label>
                 <input type={"file"} id={"cat-uploads"} name={"photo-uploads"} accept={"image/*"}/>
-                <label htmlFor={"name"}>Name</label>
+                <label htmlFor={"name"}>Name:</label>
                 <input name={"name"} id={"form-name"} type={"text"} placeholder={"Make one up if you don't know!"}
                        required={true}/>
-                <label htmlFor={"post"}>Post</label>
+                <label htmlFor={"post"}>Post:</label>
                 <input name={"post"} id={"form-post"} type={"text"} placeholder={"..."} required={true}/>
                 <button type={"submit"} className={"submit-newcat"} id={"post-newcat"}>Post</button>
             </form>
