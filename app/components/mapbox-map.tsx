@@ -139,7 +139,8 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
                 <button type={"submit"} className={"submit-newcat"} id={"post-newcat"}>Post</button>
             </form>
         </div>
-        <div ref={mapRef} style={{width: '100vw', height: '100vh'}}/>
+        <div id={"map"} ref={mapRef}/>
+
     </div>);
 });
 
