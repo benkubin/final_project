@@ -29,7 +29,7 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
     const closeForm = () => {
         // @ts-ignore
         document.getElementById("newcat-popup").style.display = "none";
-        clearForm();
+        //clearForm();
     }
 
     React.useEffect(() => {

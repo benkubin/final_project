@@ -181,6 +181,7 @@ body,
 
 .mapboxgl-popup {
   max-width: 200px;
+  height: auto;
 }
 
 .mapboxgl-popup-content {
@@ -236,6 +237,7 @@ body,
 
 #newcat-form .exit-newcat-button {
   background-color: #d70f9d;
+  color: #ffffff;
   opacity: 50%;
   border: none;
   padding: 10px;
