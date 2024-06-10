@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "aws-sdk": "^2.1638.0",
     "axios": "^1.7.2",
     "cors": "^2.8.5",
     "express": "^4.19.2",

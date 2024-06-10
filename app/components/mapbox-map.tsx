@@ -2,6 +2,8 @@
 import * as React from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
+import AWS from "aws-sdk";
+import S3 from "aws-sdk/clients/s3";
 // import the mapbox-gl styles so that the map is displayed correctly
 
 type MapboxMapProps = {};
@@ -123,6 +125,61 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
 
         })
     }
+
+    const [file, setFile] = React.useState(null);
+    const [uploading, setUploading] = React.useState(false);
+
+    const allowedTypes = [
+        'image/jpeg',
+        'image/png'
+    ]
+
+    const handleFileChange = (event: { target: { files: any[]; }; }) => {
+        const selectedFile = event.target.files[0];
+        if (allowedTypes.includes(selectedFile.type)) {
+            setFile(selectedFile);
+        } else {
+            alert('Invalid file type. Only images are allowed.');
+        }
+    };
+
+    const uploadFile = async () => {
+        setUploading(true);
+        const S3_BUCKET = 'marss-storage';
+        const REGION = 'us-west-2';
+
+        AWS.config.update({
+            accessKeyId: 'AKIASCJOCPOJKXRMX4HG',
+            secretAccessKey: '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',
+        })
+
+        const s3 = new S3({
+            params: { Bucket: S3_BUCKET },
+            region: REGION,
+        });
+
+        const params = {
+            Bucket: S3_BUCKET,
+            // @ts-ignore
+            Key: file.name,
+            Body: file,
+        }
+
+        try {
+            // @ts-ignore
+            const upload = await s3.putObject(params).promise();
+            console.log(upload);
+            setUploading(false)
+            alert('File uploaded successfully.');
+
+        } catch (error) {
+            console.error(error);
+            setUploading(false)
+            // @ts-ignore
+            alert('Error uploading file: ' + error.message);
+        }
+    };
+
     return (<div>
         <button id={"new-cat"} onClick={openForm}>+</button>
         <div id={"newcat-popup"}>
@@ -130,7 +187,8 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
                 <button type={"button"} className={"exit-newcat-button"} onClick={closeForm}>X</button>
                 <h2>Add a cat!</h2>
                 <label htmlFor={"photo-uploads"}>Upload Photo:</label>
-                <input type={"file"} id={"cat-uploads"} name={"photo-uploads"} accept={"image/*"}/>
+                <input type={"file"} id={"cat-uploads"} name={"photo-uploads"} accept={"image/*"} onChange={handleFileChange}/>
+                <button onClick={uploadFile}>{uploading ? 'Uploading...' : 'Upload File'}</button>
                 <label htmlFor={"name"}>Name:</label>
                 <input name={"name"} id={"form-name"} type={"text"} placeholder={"Make one up if you don't know!"}
                        required={true}/>
