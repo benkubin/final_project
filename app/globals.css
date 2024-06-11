@@ -184,6 +184,10 @@ body,
   height: auto;
 }
 
+.mapboxgl-popup img {
+  max-height: 50px;
+}
+
 .mapboxgl-popup-content {
   text-align: left;
   color: #d70f9d;

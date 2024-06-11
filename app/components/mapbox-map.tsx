@@ -34,6 +34,61 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
         //clearForm();
     }
 
+    class Cat {
+        longitude: number;
+        latitude: number;
+        name: string;
+        post: string;
+        image: string;
+
+        constructor(longitude: number, latitude: number, name: string, post: string, image: string) {
+            this.longitude = longitude;
+            this.latitude = latitude;
+            this.name = name;
+            this.post = post;
+            this.image = image;
+        }
+
+        toGeoJSON() {
+            // @ts-ignore
+            geojson.features.push(`{
+                type: 'Feature',
+                geometry: {
+                    type: 'Point',
+                    coordinates: [${this.longitude}, ${this.latitude}]
+                },
+                properties: {
+                    name: '${this.name}',
+                    post: '${this.post}'
+                    image: '${this.image}'
+                }
+            },`);
+        }
+    }
+
+    const geojson= {
+        type: 'FeatureCollection',
+        features: [
+            {
+                type: 'Feature',
+                geometry: {
+                    type: 'Point',
+                    coordinates: [-122.420749, 47.659957]
+                },
+                properties: {
+                    name: 'Test Kitty :)',
+                    post: "Isn't this a fun app?",
+                    image: 'https://marss-storage.s3.us-west-2.amazonaws.com/IMG_7769.jpeg'
+                }
+            },
+        ]
+    };
+
+
+
+
+
+
     React.useEffect(() => {
         const node = mapRef.current;
         // if the window object is not found, that means
@@ -103,11 +158,17 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
 
                         const nameValue = getFormName();
                         const postValue = getFormPost();
+                        const imageURL = getImageURL();
+
+                        const kitty = new Cat(lng, lat, nameValue, postValue, imageURL);
+                        kitty.toGeoJSON();
+
 
                         const marker = new mapboxgl.Marker()
                             .setLngLat([lng, lat])
                             .setPopup(new mapboxgl.Popup({offset: 25}) // add popups
                                 .setHTML(`<h3>${nameValue}</h3>
+                                        <img src=${imageURL}  alt="a beautiful kitty">
                                         <p>${postValue}</p>`))
                             .addTo(map as mapboxgl.Map); // Use map from useState
                     }, (error) => {
@@ -126,17 +187,26 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
         })
     }
 
+    const getImageURL = () => {
+        const baseURL = "https://marss-storage.s3.us-west-2.amazonaws.com/";
+        const iurl = filename;
+        return baseURL.concat(filename);
+    }
+
     const [file, setFile] = React.useState(null);
     const [uploading, setUploading] = React.useState(false);
+    const [filename, setFilename] = React.useState<string>("");
 
     const allowedTypes = [
         'image/jpeg',
         'image/png'
     ]
 
-    const handleFileChange = (event: { target: { files: any[]; }; }) => {
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        // @ts-ignore
         const selectedFile = event.target.files[0];
         if (allowedTypes.includes(selectedFile.type)) {
+            // @ts-ignore
             setFile(selectedFile);
         } else {
             alert('Invalid file type. Only images are allowed.');
@@ -168,6 +238,9 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
         try {
             // @ts-ignore
             const upload = await s3.putObject(params).promise();
+            // @ts-ignore
+            const filename = params.Key;
+            setFilename(filename);
             console.log(upload);
             setUploading(false)
             alert('File uploaded successfully.');
@@ -178,9 +251,11 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
             // @ts-ignore
             alert('Error uploading file: ' + error.message);
         }
+
     };
 
-    return (<div>
+
+    return <div>
         <button id={"new-cat"} onClick={openForm}>+</button>
         <div id={"newcat-popup"}>
             <form id={"newcat-form"} encType={"multipart/form-data"} onSubmit={closeForm}>
@@ -199,7 +274,7 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
         </div>
         <div id={"map"} ref={mapRef}/>
 
-    </div>);
+    </div>;
 });
 
 export default MapboxMap
