@@ -1,0 +1,20 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.420749,
+          47.659957
+        ]
+      },
+      "properties": {
+        "name": "Venus :)",
+        "post": "Isn't this a fun app?",
+        "image": "https://marss-storage.s3.us-west-2.amazonaws.com/IMG_7769.jpeg"
+      }
+    }
+  ]
+}

@@ -4,6 +4,8 @@ import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import AWS from "aws-sdk";
 import S3 from "aws-sdk/clients/s3";
+import { v4 as uuidv4 } from "uuid";
+
 
 // Imports the mapbox-gl styles so that the map is displayed correctly
 type MapboxMapProps = {};
@@ -28,60 +30,62 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
         document.getElementById("newcat-popup").style.display = "none";
     }
 
-    // Creates a class to be used later on to create new objects and push them to a database!
-    class Cat {
-        longitude: number;
-        latitude: number;
-        name: string;
-        post: string;
-        image: string;
+    // The first of a few scary exposed private keys... struggled with this but at least I know it's bad practice
+    AWS.config.update({
+        region: "us-west-2",
+        accessKeyId: 'AKIASCJOCPOJKXRMX4HG',
+        secretAccessKey: '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',
+    })
 
-        // Constructor method for the Cat class that helps build a cat object based on form input
-        constructor(longitude: number, latitude: number, name: string, post: string, image: string) {
-            this.longitude = longitude;
-            this.latitude = latitude;
-            this.name = name;
-            this.post = post;
-            this.image = image;
-        }
+    // Initializes new documentclient for DynamoDB
+    const ddb = new AWS.DynamoDB.DocumentClient();
 
-        // Method that is currently unused, but can transform a cat object into a geoJSON object that can be placed
-        // on the map! Eventually, this will ensure that all markers are placed.
-        toGeoJSON() {
+    // Function to fetch all items from DynamoDB to add to map
+    const fetchAllItems = async () => {
+        const params = {
+            TableName: "snapacat-posts"
+        };
+
+        // @ts-ignore
+        let items = [];
+        let data;
+
+        // While there is data in database, continue to scan (similar to query) to return items and
+        // add to data array
+        do {
+            data = await ddb.scan(params).promise();
             // @ts-ignore
-            geojson.features.push(`{
-                type: 'Feature',
-                geometry: {
-                    type: 'Point',
-                    coordinates: [${this.longitude}, ${this.latitude}]
-                },
-                properties: {
-                    name: '${this.name}',
-                    post: '${this.post}'
-                    image: '${this.image}'
-                }
-            },`);
-        }
-    }
+            items = items.concat(data.Items);
+            // @ts-ignore
+            params.ExclusiveStartKey = data.LastEvaluatedKey;
+        } while (typeof data.LastEvaluatedKey !== "undefined");
 
-    // geoJSON Feature Collection structure that CAN be used to place markers, but I'd rather come up with a better solution
-    const geojson= {
-        type: 'FeatureCollection',
-        features: [
-            {
-                type: 'Feature',
-                geometry: {
-                    type: 'Point',
-                    coordinates: [-122.420749, 47.659957]
-                },
-                properties: {
-                    name: 'Test Kitty :)',
-                    post: "Isn't this a fun app?",
-                    image: 'https://marss-storage.s3.us-west-2.amazonaws.com/IMG_7769.jpeg'
-                }
-            },
-        ]
+        return items;
     };
+
+// Function to add markers to the map
+    // @ts-ignore
+    const addMarkersToMap = (map, items) => {
+        // For each item in items (database data), adds a marker to the map
+        // @ts-ignore
+        items.forEach(item => {
+            const lng = parseFloat(item.lng);
+            const lat = parseFloat(item.lat);
+            const name = item.catName;
+            const post = item.postContent;
+            const imageURL = item.imageURL;
+
+            const marker = new mapboxgl.Marker()
+                .setLngLat([lng, lat])
+                .setPopup(new mapboxgl.Popup({ offset: 25 })
+                    .setHTML(`<h3>${name}</h3>
+                          <img src=${imageURL} alt="a beautiful kitty">
+                          <p>${post}</p>`))
+                .addTo(map);
+        });
+    };
+
+
 
     // The React DOM will render this component and carry out functions upon loading
     React.useEffect(() => {
@@ -102,6 +106,14 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
 
         // Saves the map object to React.useState
         setMap(mapboxMap);
+
+        // Ensures that map is loaded and then calls fetchAllItems function
+        // Also calls addMarkersToMap with active map and items params
+        mapboxMap.on('load', () => {
+            fetchAllItems().then(items => {
+                addMarkersToMap(mapboxMap, items);
+            });
+        });
 
         if (typeof ref === 'function') {
             ref(mapboxMap);
@@ -156,11 +168,37 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
                         const nameValue = getFormName();
                         const postValue = getFormPost();
                         const imageURL = getImageURL();
+                        const postId = uuidv4();
 
-                        // Again, this has not been implemented yet, but new cat object is created to be added to database,
-                        // which will eventually lead to all markers being rendered on the map
-                        const kitty = new Cat(lng, lat, nameValue, postValue, imageURL);
-                        kitty.toGeoJSON();
+
+                        // DynamoDB params to put each cat item to database
+                        AWS.config.update({
+                            region: "us-west-2",
+                            accessKeyId: 'AKIASCJOCPOJKXRMX4HG',
+                            secretAccessKey: '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',
+                        })
+                        const ddb = new AWS.DynamoDB({ apiVersion: "2012-08-10" });
+                        const params = {
+                            TableName: "snapacat-posts",
+                            Item: {
+                                postId: { N: `${postId.toString()}` },
+                                catName: { S: `${nameValue}` },
+                                imageURL: { S: `${imageURL}` },
+                                postContent: { S: `${postValue}` },
+                                lat: { N: `${lat.toString()}` },
+                                lng: { N: `${lng.toString()}` },
+                            },
+                        };
+
+                        // @ts-ignore
+                        ddb.putItem(params, function (err, data) {
+                            if (err) {
+                                console.log("Error", err);
+                            } else {
+                                console.log("Success", data);
+                            }
+                        });
+
 
                         // Creates a marker with the form input and adds popup to the marker
                         const marker = new mapboxgl.Marker()
@@ -187,6 +225,8 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
 
         })
     }
+
+
 
     // Function that appends the filename to the main URL of my S3 bin
     const getImageURL = () => {
