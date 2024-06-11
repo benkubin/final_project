@@ -189,7 +189,6 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
 
     const getImageURL = () => {
         const baseURL = "https://marss-storage.s3.us-west-2.amazonaws.com/";
-        const iurl = filename;
         return baseURL.concat(filename);
     }
 
@@ -237,7 +236,6 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
         try {
             // @ts-ignore
             const upload = await s3.putObject(params).promise();
-            // @ts-ignore
             const filename = params.Key;
             setFilename(filename);
             console.log(upload);
