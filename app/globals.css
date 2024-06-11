@@ -196,8 +196,8 @@ body,
 #newcat-popup {
   display: none;
   height: auto;
-  width: 80vw;
-  max-width: 300px;
+  width: 90vw;
+  max-width: 320px;
   position: absolute;
   top: 16vh;
   left: 20vw;
@@ -210,21 +210,33 @@ body,
 
 #newcat-form {
   width: 100%;
-  padding: 60px;
+  padding: 40px;
   border-radius: 5%;
   background-color: #5f0745;
 }
 
 #newcat-form h2 {
-  padding: 20px 0 10px 0;
+  padding: 0;
+  margin: 5px;
+  float: right;
 }
+
+#newcat-form input[type=text] {
+  background: #8a1568;
+  color: #ffffff;
+  border-radius: 10px;
+}
+
 
 #newcat-form input[type=text], #newcat-form input[type=file] {
   width: 100%;
   padding: 15px;
   margin: 5px 0 22px 0;
   border: none;
-  background: #5f0745;
+}
+
+#newcat-form input[type=file] {
+  display: block;
 }
 
 #newcat-form .submit-newcat {
@@ -244,16 +256,28 @@ body,
   color: #ffffff;
   opacity: 50%;
   border: none;
-  padding: 10px;
-  position: absolute;
+  padding: 0;
   border-radius: 50%;
   height: 2.5rem;
   width: 2.5rem;
   font-size: 1rem;
-  top: 3vh;
-  left: 4vw;
+  float: left;
 }
 
+#file-uploader {
+  display: block;
+  padding: 2px;
+  margin: 2px;
+}
+
+#form-top-bar {
+  display: flex;
+  flex-direction: row;
+  justify-items: center;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
 
 #map {
   width: 100vw;

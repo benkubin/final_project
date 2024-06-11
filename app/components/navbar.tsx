@@ -6,7 +6,7 @@ const Navbar = () => {
     return (
             <div id={"nav-bar"}>
                 <a href={"/"}>Home</a>
-                <a href={"/"}>Feed</a>
+                {/*<a href={"/"}>Feed</a>*/}
             </div>
             )
 }
