@@ -203,9 +203,8 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
     ]
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        // @ts-ignore
-        const selectedFile = event.target.files[0];
-        if (allowedTypes.includes(selectedFile.type)) {
+        const selectedFile = event.target.files?.[0];
+        if (selectedFile && allowedTypes.includes(selectedFile.type)) {
             // @ts-ignore
             setFile(selectedFile);
         } else {

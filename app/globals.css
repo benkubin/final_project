@@ -185,7 +185,7 @@ body,
 }
 
 .mapboxgl-popup img {
-  max-height: 50px;
+  max-height: 100px;
 }
 
 .mapboxgl-popup-content {
