@@ -5,6 +5,8 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import AWS from "aws-sdk";
 import S3 from "aws-sdk/clients/s3";
 import {v4 as uuidv4} from "uuid";
+require('dotenv').config();
+
 
 
 // Imports the mapbox-gl styles so that the map is displayed correctly
@@ -33,8 +35,8 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
     // The first of a few scary exposed private keys... struggled with this but at least I know it's bad practice
     AWS.config.update({
         region: "us-west-2",
-        accessKeyId: 'AKIASCJOCPOJKXRMX4HG',
-        secretAccessKey: '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',
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     })
 
     // Initializes new documentclient for DynamoDB
@@ -181,8 +183,8 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
                         // DynamoDB params to put each cat item to database
                         AWS.config.update({
                             region: "us-west-2",
-                            accessKeyId: 'AKIASCJOCPOJKXRMX4HG',
-                            secretAccessKey: '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',
+                            accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+                            secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
                         })
                         const ddb = new AWS.DynamoDB({apiVersion: "2012-08-10"});
                         const params = {
@@ -267,7 +269,7 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
 
         // Again, not best practice but I struggled with this part a little bit.
         AWS.config.update({
-            accessKeyId: 'AKIASCJOCPOJKXRMX4HG', secretAccessKey: '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',
+            accessKeyId: process.env.AWS_ACCESS_KEY_ID, secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
         })
 
         // Creates new S3 instance
