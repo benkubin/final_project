@@ -63,7 +63,7 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
         return items;
     };
 
-// Function to add markers to the map
+    // Function to add markers to the map
     // @ts-ignore
     const addMarkersToMap = (map, items) => {
         // For each item in items (database data), adds a marker to the map
@@ -168,8 +168,17 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
                         const nameValue = getFormName();
                         const postValue = getFormPost();
                         const imageURL = getImageURL();
-                        const postId = uuidv4();
+                        // Creates unique id for each image
+                        const postUUID = uuidv4();
 
+                        // This function returns a uuid that is only numbers (specified by DynamoDB PK)
+                        function removeDashes(inputUUID: string) {
+                            return inputUUID.replace(/\D/g, '');
+                        }
+
+                        // Removes all non-numeric characters from id
+                        const imageId = removeDashes(postUUID);
+                        console.log(imageId);
 
                         // DynamoDB params to put each cat item to database
                         AWS.config.update({
@@ -181,7 +190,7 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
                         const params = {
                             TableName: "snapacat-posts",
                             Item: {
-                                postId: { N: `${postId.toString()}` },
+                                postId: { N: `${imageId.toString()}` },
                                 catName: { S: `${nameValue}` },
                                 imageURL: { S: `${imageURL}` },
                                 postContent: { S: `${postValue}` },
@@ -199,15 +208,14 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
                             }
                         });
 
-
-                        // Creates a marker with the form input and adds popup to the marker
-                        const marker = new mapboxgl.Marker()
-                            .setLngLat([lng, lat])
-                            .setPopup(new mapboxgl.Popup({offset: 25}) // add popups
-                                .setHTML(`<h3>${nameValue}</h3>
-                                        <img src=${imageURL}  alt="a beautiful kitty">
-                                        <p>${postValue}</p>`))
-                            .addTo(map as mapboxgl.Map); // Use map from useState
+                        // // Creates a marker with the form input and adds popup to the marker
+                        // const marker = new mapboxgl.Marker()
+                        //     .setLngLat([lng, lat])
+                        //     .setPopup(new mapboxgl.Popup({offset: 25}) // add popups
+                        //         .setHTML(`<h3>${nameValue}</h3>
+                        //                 <img src=${imageURL}  alt="a beautiful kitty">
+                        //                 <p>${postValue}</p>`))
+                        //     .addTo(map as mapboxgl.Map); // Use map from useState
                     }, (error) => {
                         console.error("Geolocation error:", error);
                     });
