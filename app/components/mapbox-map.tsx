@@ -4,7 +4,7 @@ import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import AWS from "aws-sdk";
 import S3 from "aws-sdk/clients/s3";
-import { v4 as uuidv4 } from "uuid";
+import {v4 as uuidv4} from "uuid";
 
 
 // Imports the mapbox-gl styles so that the map is displayed correctly
@@ -77,14 +77,13 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
 
             const marker = new mapboxgl.Marker()
                 .setLngLat([lng, lat])
-                .setPopup(new mapboxgl.Popup({ offset: 25 })
+                .setPopup(new mapboxgl.Popup({offset: 25})
                     .setHTML(`<h3>${name}</h3>
                           <img src=${imageURL} alt="a beautiful kitty">
                           <p>${post}</p>`))
                 .addTo(map);
         });
     };
-
 
 
     // The React DOM will render this component and carry out functions upon loading
@@ -96,8 +95,7 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
         // If map is not already found, this creates a new map instance
         // Map is centered on Seattle and styled with a Mapbox Studio style I created
         const mapboxMap = new mapboxgl.Map({
-            container: node,
-            // I understand that hard-keying access keys like this can be dangerous, but struggled with my process.env files.
+            container: node, // I understand that hard-keying access keys like this can be dangerous, but struggled with my process.env files.
             accessToken: "pk.eyJ1IjoiYnhrdWJpbiIsImEiOiJjbHdmcGpwNWwwMnB1MnJvN20wNWoxcXJ4In0.n7Cr1xiFCZKL1WGyZhuBjQ",
             style: "mapbox://styles/bxkubin/clwfpnrl400b301pp23d51ot4",
             center: [-122.358289, 47.606787],
@@ -186,16 +184,15 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
                             accessKeyId: 'AKIASCJOCPOJKXRMX4HG',
                             secretAccessKey: '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',
                         })
-                        const ddb = new AWS.DynamoDB({ apiVersion: "2012-08-10" });
+                        const ddb = new AWS.DynamoDB({apiVersion: "2012-08-10"});
                         const params = {
-                            TableName: "snapacat-posts",
-                            Item: {
-                                postId: { N: `${imageId.toString()}` },
-                                catName: { S: `${nameValue}` },
-                                imageURL: { S: `${imageURL}` },
-                                postContent: { S: `${postValue}` },
-                                lat: { N: `${lat.toString()}` },
-                                lng: { N: `${lng.toString()}` },
+                            TableName: "snapacat-posts", Item: {
+                                postId: {N: `${imageId.toString()}`},
+                                catName: {S: `${nameValue}`},
+                                imageURL: {S: `${imageURL}`},
+                                postContent: {S: `${postValue}`},
+                                lat: {N: `${lat.toString()}`},
+                                lng: {N: `${lng.toString()}`},
                             },
                         };
 
@@ -208,14 +205,6 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
                             }
                         });
 
-                        // // Creates a marker with the form input and adds popup to the marker
-                        // const marker = new mapboxgl.Marker()
-                        //     .setLngLat([lng, lat])
-                        //     .setPopup(new mapboxgl.Popup({offset: 25}) // add popups
-                        //         .setHTML(`<h3>${nameValue}</h3>
-                        //                 <img src=${imageURL}  alt="a beautiful kitty">
-                        //                 <p>${postValue}</p>`))
-                        //     .addTo(map as mapboxgl.Map); // Use map from useState
                     }, (error) => {
                         console.error("Geolocation error:", error);
                     });
@@ -235,7 +224,6 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
     }
 
 
-
     // Function that appends the filename to the main URL of my S3 bin
     const getImageURL = () => {
         const baseURL = "https://marss-storage.s3.us-west-2.amazonaws.com/";
@@ -244,6 +232,7 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
 
     // AWS File Upload Code Source:
     // https://dev.to/aws-builders/how-to-upload-files-to-amazon-s3-with-react-and-aws-sdk-b0n
+    // & https://docs.aws.amazon.com
     //
     // Had to tailor to this specific use case, was able to learn quite a bit about how to use S3 in projects!
 
@@ -253,10 +242,7 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
     const [filename, setFilename] = React.useState<string>("");
 
     // Sets allowed types for the file upload
-    const allowedTypes = [
-        'image/jpeg',
-        'image/png'
-    ]
+    const allowedTypes = ['image/jpeg', 'image/png']
 
     // Function that takes a change event (onChange in normal JS) and sets the file up for uploading
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -281,22 +267,18 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
 
         // Again, not best practice but I struggled with this part a little bit.
         AWS.config.update({
-            accessKeyId: 'AKIASCJOCPOJKXRMX4HG',
-            secretAccessKey: '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',
+            accessKeyId: 'AKIASCJOCPOJKXRMX4HG', secretAccessKey: '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',
         })
 
         // Creates new S3 instance
         const s3 = new S3({
-            params: { Bucket: S3_BUCKET },
-            region: REGION,
+            params: {Bucket: S3_BUCKET}, region: REGION,
         });
 
         // Declares parameters for file to be uploaded
         const params = {
-            Bucket: S3_BUCKET,
-            // @ts-ignore
-            Key: file.name,
-            Body: file,
+            Bucket: S3_BUCKET, // @ts-ignore
+            Key: file.name, Body: file,
         }
 
         // Exception handling block that awaits the async promise before putting the object to S3 bucket
@@ -333,7 +315,8 @@ const MapboxMap = React.forwardRef<MapboxMapRef, MapboxMapProps>((props, ref) =>
 
                 </div>
                 <label htmlFor={"photo-uploads"}>Upload Photo:</label>
-                <input type={"file"} id={"cat-uploads"} name={"photo-uploads"} accept={"image/*"} onChange={handleFileChange}/>
+                <input type={"file"} id={"cat-uploads"} name={"photo-uploads"} accept={"image/*"}
+                       onChange={handleFileChange}/>
                 <button onClick={uploadFile} id={"file-uploader"}>{uploading ? 'Uploading...' : 'Upload File'}</button>
                 <br/>
                 <label htmlFor={"name"}>Name:</label>
