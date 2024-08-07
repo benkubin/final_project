@@ -7,7 +7,7 @@ const PostForm = () => {
             <div className={"post-form-content"}>
                 <div className={"post-form-header"}>
                     <button className={"post-form-exit-btn"}>exit</button>
-                    <h3>add a cat</h3>
+                    <h2>add a cat</h2>
                 </div>
                 <div className={"image-preview"}>
 
@@ -22,9 +22,16 @@ const PostForm = () => {
                             <line x1="7.32927" y1="7.74831" x2="16.3293" y2="15.6242" stroke="white"/>
                         </svg>
                     </button>
-                    <button id={"file-uploader"}>Upload</button>
+                    <button id={"file-uploader"}>upload</button>
 
                 </div>
+                <div className={"post-content"}>
+                    <label htmlFor={"post"}>@USERNAME</label>
+                    <input name={"post"} id={"post"} type={"text"} placeholder={"..."} required={true}/>
+                    {/*<h5 id={"char-limit"}>Remaining characters:</h5>*/}
+                </div>
+                    <hr style={{width: '90%', position: 'absolute', bottom: '2.125rem'}}/>
+                    <button className={"post-btn"}>post</button>
             </div>
         </div>
     )

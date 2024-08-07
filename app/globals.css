@@ -292,7 +292,7 @@ body,
   display: flex;
   position: fixed;
   width: 80%;
-  height: 40rem;
+  height: 32rem;
   top: 10%;
   left: 10%;
   padding-top: 0.5625rem;
@@ -334,8 +334,8 @@ body,
 }
 
 .image-preview {
-  height: 12.5rem;
-  width: 12.5rem;
+  height: 10rem;
+  width: 10rem;
   border-radius: 0.125rem;
   background: #784E7A;
 }
@@ -345,7 +345,7 @@ body,
   display: flex;
   padding: 1.025rem;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 
 #file-uploader, #file-picker {
@@ -356,11 +356,52 @@ body,
   padding-left: 1rem;
 }
 
+
+
 #delete-file {
   display: flex;
   background: none;
   align-items: center;
   justify-content: center;
   border: none;
+}
+
+.post-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+}
+
+#post {
+  border-radius: 0.375rem;
+  border: none;
+  background: #784E7A;
+  height: 8rem;
+  margin-top: 1.025rem;
+  position: relative;
+}
+
+/*#char-limit {*/
+/*  float: right;*/
+/*  font-size: .8rem;*/
+/*}*/
+
+.post-btn {
+  position: absolute;
+  bottom: 0;
+  background: #A14EA6;
+  border: none;
+  border-radius: 0 0 1.625rem 1.625rem;
+  display: flex;
+  height: 2.125rem;
+  padding: 0.0625rem 1.5625rem 0.625rem 1.625rem;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.post-btn:hover {
+  background: #823e85;
 
 }
